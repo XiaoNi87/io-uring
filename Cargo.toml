@@ -18,6 +18,7 @@ exclude = []
 members = [ "io-uring-test", "io-uring-bench" ]
 
 [features]
+raid5-bpf = []
 overwrite = [ "bindgen" ]
 direct-syscall = [ "sc" ]
 io_safety = []

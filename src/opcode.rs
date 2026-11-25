@@ -2402,3 +2402,23 @@ opcode! {
         Entry(sqe)
     }
 }
+
+#[cfg(feature = "raid5-bpf")]
+opcode! {
+    /// Custom-kernel BPF operation. Descriptor storage must live through its CQE.
+    pub struct Bpf {
+        addr: { *const u8 },
+        len: { u32 },
+        ;;
+        operation: u8 = 0
+    }
+    pub const CODE = 65;
+    pub fn build(self) -> Entry {
+        let mut sqe = sqe_zeroed();
+        sqe.opcode = Self::CODE;
+        sqe.__bindgen_anon_2.addr = self.addr as u64;
+        sqe.len = self.len;
+        sqe.__bindgen_anon_3.rw_flags = (self.operation as u32) << 24;
+        Entry(sqe)
+    }
+}

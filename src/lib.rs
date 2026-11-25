@@ -327,6 +327,13 @@ impl<S: squeue::EntryMarker, C: cqueue::EntryMarker> Builder<S, C> {
         self
     }
 
+    /// Enable the BPF extension from kernel 42abd4d4c487 (not upstream ABI).
+    #[cfg(feature = "raid5-bpf")]
+    pub fn setup_bpf_ext(&mut self) -> &mut Self {
+        self.params.flags |= 1 << 21;
+        self
+    }
+
     /// Perform busy-waiting for I/O completion events, as opposed to getting notifications via an
     /// asynchronous IRQ (Interrupt Request). This will reduce latency, but increases CPU usage.
     ///
@@ -703,3 +710,6 @@ impl<S: squeue::EntryMarker, C: cqueue::EntryMarker> AsFd for IoUring<S, C> {
         self.fd.as_fd()
     }
 }
+
+#[cfg(feature = "raid5-bpf")]
+pub mod bpf;
